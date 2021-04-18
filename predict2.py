@@ -52,7 +52,7 @@ def load_dataset(textList, pad_size=32):
         contents.append((token_ids, int(label), seq_len, mask))
     return contents
 
-def get_split_text(text, split_len=32, overlap_len=8):
+def get_split_text(text, split_len=32, overlap_len=6):
     split_text=[]
     if(len(text)//split_len==0):
         split_text.append(text)
@@ -62,8 +62,25 @@ def get_split_text(text, split_len=32, overlap_len=8):
         else:      # 否则, 按照(分割长度-overlap)往后走
             window = split_len - overlap_len
             text_piece = text[w * window: w * window +split_len]
+        #print(text_piece)
         split_text.append(text_piece)
     return split_text
+#返回列表中出现频次最高的元素
+def most_common(seq):
+    d = {}
+    for i in seq:
+       d[i] = d.get(i, 0) + 1
+    ret = []
+    for j in sorted(d.items(), reverse=True, key=lambda x:x[1]):
+        if len(ret) == 0:
+            ret.append(j[0])
+            n = j[1]
+        else:
+            if j[1] == n:
+                ret.append(j[0])
+            else:
+                break
+    return ret
 
 def predict(textList):
     key = []
@@ -79,25 +96,33 @@ def predict(textList):
         tmpList = get_split_text(textList[i])
         newTextList.extend(tmpList)
         listmap[i]=len(tmpList)
-    print(listmap)
-    print(newTextList)
+    print("listmap:",listmap)
+    print("new_predict_all len:", len(listmap))
+    #print(newTextList)
     test_data = load_dataset(newTextList, config.pad_size)
     test_iter = build_iterator(test_data, config)
-    predict_all = np.array([], dtype=int)
+    predict_all_int = np.array([], dtype=int)
     with torch.no_grad():
         for texts, lables in test_iter:
             outputs = model(texts)
             predict = torch.max(outputs.data, 1)[1].cpu().numpy()
-            predict_all = np.append(predict_all, predict)
+            predict_all_int = np.append(predict_all_int, predict)
+    predict_all_s  = []
+    for i in range(len(predict_all_int)):
+        predict_all_s.append(class1.get(predict_all_int[i]))
+
     new_predict_all = []
     index = 0
     for i in range(len(key)):
         tmpPredict = []
         num = listmap[i]
         for j in range(num):
-            tmpPredict.append(predict_all[index])
+            tmpPredict.append(predict_all_s[index])
             index = index+1
-        new_predict_all.append(max(tmpPredict, key=tmpPredict .count))
+        print("tmpPredict:",tmpPredict)
+        new_predict_all.extend(most_common(tmpPredict))
+
+
     return new_predict_all
 
 def listToJson(lst):
@@ -106,16 +131,15 @@ def listToJson(lst):
     str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
     return str_json
 class IndexHandler(tornado.web.RequestHandler):
+
     def post(self, *args, **kwargs):
         j = json.loads(self.request.body.decode('utf-8'))
         # print(j["textList"])
         textList = j["textList"]
 
         result = predict(textList)
-        predict_all = []
-        for i in range(len(result)):
-            predict_all.append(class1.get(result[i]))
-        result1 = listToJson(predict_all)
+
+        result1 = listToJson(result)
         print(''.join(result1))
         self.write(''.join(result1))
 
@@ -146,4 +170,4 @@ if __name__ == '__main__':
     class1 = {0: '财经', 1: '房产', 2: '股票',3:'教育',4:'科技',5:'社会',6:'时政',7:'体育',8:'游戏',9:'娱乐'}
 
     print(predict(textList1))
-    #main()
+    main()
