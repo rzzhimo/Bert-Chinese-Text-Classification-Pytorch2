@@ -97,7 +97,7 @@ def predict(textList):
         newTextList.extend(tmpList)
         listmap[i]=len(tmpList)
     print("listmap:",listmap)
-    print("new_predict_all len:", len(listmap))
+    print("new_predict_all len:", len(newTextList))
     #print(newTextList)
     test_data = load_dataset(newTextList, config.pad_size)
     test_iter = build_iterator(test_data, config)
