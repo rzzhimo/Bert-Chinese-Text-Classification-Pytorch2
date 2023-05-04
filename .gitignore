@@ -2,6 +2,7 @@
 bert_pretrain/
 build/
 THUCNews/
+pytorch_pretrained/__pycache__/
 
 node_modules
 /dist
