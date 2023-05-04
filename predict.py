@@ -1,4 +1,5 @@
 # coding: UTF-8
+# 这个文件同样只是简单跑一下测试集，但是不输出label、predict，和predict.py没有本质区别
 import time
 import torch
 import numpy as np

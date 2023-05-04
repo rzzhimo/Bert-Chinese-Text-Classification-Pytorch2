@@ -1,4 +1,6 @@
 # coding: UTF-8
+# 这个文件是部署Python文本分类微服务关键文件。
+# 用法：set PYTHONIOENCODING=utf8 && python "相对路径/predictserver.py" 
 import time
 import torch
 import numpy as np
@@ -82,6 +84,7 @@ def most_common(seq):
                 break
     return ret
 
+# 预测文本类别的关键函数
 def predict(textList):
     key = []
     value = []
@@ -125,13 +128,15 @@ def predict(textList):
 
     return new_predict_all
 
+##该函数用于将Python的list转为json格式，方便Java后端接收
 def listToJson(lst):
     keys = [str(x) for x in np.arange(len(lst))]
     list_json = dict(zip(keys, lst))
     str_json = json.dumps(list_json, indent=2, ensure_ascii=False)  # json转为string
     return str_json
-class IndexHandler(tornado.web.RequestHandler):
 
+class IndexHandler(tornado.web.RequestHandler):
+    # 用于处理Java后端发过来的post请求
     def post(self, *args, **kwargs):
         j = json.loads(self.request.body.decode('utf-8'))
         # print(j["textList"])
