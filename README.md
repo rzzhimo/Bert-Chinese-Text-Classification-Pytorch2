@@ -4,6 +4,14 @@
 中文文本分类，Bert，ERNIE，基于pytorch，开箱即用。
 ## 感谢
 fork了作者的项目，自己对它进行了修改，主要包括增加预测的模块，并部署成微服务，以适应自己项目的需求。保留了原作者的介绍。  
+
+## 增加工作：
+增加了predict.py，predictserver.py文件，重点在于predictserver.py文件。这个文件是部署Python文本分类微服务的关键文件。  
+```
+具体用法：  
+set PYTHONIOENCODING=utf8 && python "相对路径/predictserver.py" 
+```
+
 **原作者的项目地址为**:[项目地址](https://github.com/649453932/Bert-Chinese-Text-Classification-Pytorch)
 ## 介绍
 模型介绍、数据流动过程：~~还没写完，写好之后再贴博客地址。~~ 工作忙，懒得写了，类似文章有很多。

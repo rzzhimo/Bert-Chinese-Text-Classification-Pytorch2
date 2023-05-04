@@ -32,20 +32,20 @@ if __name__ == '__main__':
     time_dif = get_time_dif(start_time)
     print("Time usage:", time_dif)
 
-    # train
+    # train 这是训练模块
     model = x.Model(config).to(config.device)
-    #train(config, model, train_iter, dev_iter, test_iter)
+    train(config, model, train_iter, dev_iter, test_iter)
 
-    #test
+    #test 这是测试模块，在训练完后如果不想跑测试集就把这段注释掉，要跑测试集就不要注释
     #test(config, model, test_iter)
-    model.load_state_dict(torch.load(config.save_path))
-    model.eval()
-    with torch.no_grad():
-        for texts, lables in test_iter:
-            print("label:")
-            print(lables)
-
-            outputs = model(texts)
-            predict = torch.max(outputs.data, 1)[1].cpu().numpy()
-            print("predict")
-            print(predict)
+    # model.load_state_dict(torch.load(config.save_path))
+    # model.eval()
+    # with torch.no_grad():
+    #     for texts, lables in test_iter:
+    #         print("label:")
+    #         print(lables)
+    #
+    #         outputs = model(texts)
+    #         predict = torch.max(outputs.data, 1)[1].cpu().numpy()
+    #         print("predict")
+    #         print(predict)

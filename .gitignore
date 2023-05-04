@@ -16,10 +16,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # Editor directories and files
-.idea
+.idea/
 .vscode
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw*
+
+*.xml
+*.iml
